@@ -1,6 +1,6 @@
-import HeroSection from "../components/herosection"
 "use client";
 
+import HeroSection from "../components/herosection"
 import Image from "next/image";
 import Navbar from "../components/navbar";
 import DiagnosisModal from "@/components/diagnosisModal";
@@ -12,8 +12,7 @@ export default function Home() {
   return (
     <div>
       <HeroSection />
-      <Navbar />
-      <DiagnosisModal isOpen={open} onClose={() => {setOpen(false)}} disease="healthy" />
+      <DiagnosisModal isOpen={open} onClose={() => {setOpen(false)}} diagnosis="cataracts" />
     </div>
   );
 }

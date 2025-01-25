@@ -4,30 +4,30 @@ import Link from "next/link";
 
 export default function Navbar() {
   return (
-    <nav className="bg-black text-white fixed top-20 w-full px-36">
-      <div className="flex items-center justify-between mx-auto">
+    <nav className="block top-20 w-full py-10 md:py-14 px-20 md:px-36">
+      <div className="flex items-center justify-between md:mx-auto">
         {/* Logo */}
-        <div className="text-4xl font-bold tracking-wide">
+        <div className="text-5xl text-[#FFFFFF] font-semibold font-sans tracking-wide">
           <Link href="/">
-            <span className="block">Reti</span>
+            <span className="block ">Reti</span>
             <span className="block ml-10">Nova</span>
           </Link>
         </div>
 
         {/* Nav Links */}
-        <div className="flex gap-10 text-4xl">
+        <div className="flex flex-col md:flex-row gap-6 md:gap-10 text-4xl text-[#858585] text-right font-sans font-light">
           <Link
-           href="/about" 
-           className="hover:underline">
-          Overview
+          href="/about" 
+          className="hover:underline hover:text-[#FFFFFF]">
+          OVERVIEW
           </Link>
           <Link 
             href="/" 
-            className="hover:underline">
-            Home
+            className="hover:underline hover:text-[#FFFFFF]">
+            HOME
           </Link>        
         </div>
-        </div>
+      </div>
     </nav>
   );
 }

@@ -68,7 +68,7 @@ def filter_loader_by_labels(loader, valid_labels):
     filtered_labels = []
     for images, labels in loader:
         for i, label in enumerate(labels):
-            if label.item() in valid_labels:  # Keep only valid labels
+            if label.item() in valid_labels:
                 filtered_images.append(images[i])
                 filtered_labels.append(label)
     return DataLoader(torch.utils.data.TensorDataset(torch.stack(filtered_images), torch.tensor(filtered_labels)),
@@ -76,3 +76,88 @@ def filter_loader_by_labels(loader, valid_labels):
 
 valid_labels = [train_dataset.class_to_idx['cataracts'], train_dataset.class_to_idx['normal']]
 cataracts_normal_loader = filter_loader_by_labels(train_loader, valid_labels)
+normal_uveitis_loader = filter_loader_by_labels(test_loader, valid_labels)
+#model training
+class SimpleCNN(nn.Module):
+    def __init__(self, num_classes):
+        super(SimpleCNN, self).__init__()
+        self.features = nn.Sequential(
+            nn.Conv2d(3, 16, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.Conv2d(16, 32, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2)
+        )
+        self.classifier = nn.Sequential(
+            nn.Linear(32 * 56 * 56, 256),
+            nn.ReLU(),
+            nn.Dropout(0.5),
+            nn.Linear(256, num_classes)
+        )
+
+    def forward(self, x):
+        x = self.features(x)
+        x = x.view(x.size(0), -1)
+        x = self.classifier(x)
+        return x
+
+num_classes = 2  # 'cataracts' and 'normal'
+model = SimpleCNN(num_classes)
+criterion = nn.CrossEntropyLoss()
+optimizer = optim.Adam(model.parameters(), lr=0.001)
+
+def train_model(model, loader, num_epochs=20):
+    for epoch in range(num_epochs):
+        model.train()
+        running_loss = 0.0
+        correct = 0
+        total = 0
+        for inputs, labels in loader:
+            # Convert labels to range [0, 1] for 'cataracts' and 'normal'
+            labels = torch.tensor([0 if l.item() == valid_labels[0] else 1 for l in labels])
+
+            optimizer.zero_grad()
+            outputs = model(inputs)
+            loss = criterion(outputs, labels)
+            loss.backward()
+            optimizer.step()
+
+            running_loss += loss.item()
+            _, predicted = torch.max(outputs, 1)
+            total += labels.size(0)
+            correct += (predicted == labels).sum().item()
+
+        print(f"Epoch {epoch + 1}/{num_epochs}, Loss: {running_loss / len(loader)}, Accuracy: {100 * correct / total:.2f}%")
+
+# Train the model using cataracts_normal_loader
+train_model(model, cataracts_normal_loader, num_epochs=20)
+
+num_classes = 2  # 'normal' and 'uveitis'
+normal_uveitis_model = SimpleCNN(num_classes)
+criterion = nn.CrossEntropyLoss()
+optimizer = optim.Adam(normal_uveitis_model.parameters(), lr=0.001)
+
+def train_model_for_uveitis(model, loader, num_epochs=20):
+    for epoch in range(num_epochs):
+        model.train()
+        running_loss = 0.0
+        correct = 0
+        total = 0
+        for inputs, labels in loader:
+            labels = torch.tensor([0 if l.item() == valid_labels[0] else 1 for l in labels])
+
+            optimizer.zero_grad()
+            outputs = model(inputs)
+            loss = criterion(outputs, labels)
+            loss.backward()
+            optimizer.step()
+
+            running_loss += loss.item()
+            _, predicted = torch.max(outputs, 1)
+            total += labels.size(0)
+            correct += (predicted == labels).sum().item()
+
+        print(f"Epoch {epoch + 1}/{num_epochs}, Loss: {running_loss / len(loader)}, Accuracy: {100 * correct / total:.2f}%")
+
+train_model_for_uveitis(normal_uveitis_model, normal_uveitis_loader, num_epochs=20)

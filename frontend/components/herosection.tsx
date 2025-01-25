@@ -51,19 +51,19 @@ export default function HeroSection() {
                     danny gyno
                     </Button>
                     <Button
-                    href="/diagnosis"
-                    variant="text"
-                    sx={{
-                        color: "#FFFFFF",
-                        display: "flex",
-                        gap: "10px",
-                        alignItems: "center",
-                        fontSize: {xs:"16px", md:"18px"},
-                        transition: "transform 0.3s ease",
-                        "&:hover": {
-                            transform: "scale(1.05)", 
-                          },
-                    }}
+                        href="/diagnosis"
+                        variant="text"
+                        sx={{
+                            color: "#FFFFFF",
+                            display: "flex",
+                            gap: "10px",
+                            alignItems: "center",
+                            fontSize: {xs:"16px", md:"18px"},
+                            transition: "transform 0.3s ease",
+                            "&:hover": {
+                                transform: "scale(1.05)", 
+                            },
+                        }}
                     >
                     Get Started
                     <BsArrowUpRightCircle className="hover:animate-spin text-[#F9C7FF]" style={{fontSize: "26px"}}/>
@@ -73,10 +73,10 @@ export default function HeroSection() {
             {/* Right Content: Image */}
             <Image
             src="/eye.png"
-            alt="Hero Image"
+            alt="Eye Image"
             width={1200} 
             height={400}
-            className="hidden md:block"
+            className="hidden md:block md:max-h-[60vh]"
             />
         </div>
   );

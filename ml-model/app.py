@@ -6,6 +6,8 @@ import cv2
 from PIL import Image
 import matplotlib.pyplot as plt
 import torchvision
+import torch.nn as nn
+import torch.optim as optim
 
 #function for modifying image for better CV reading
 def modify(img):
@@ -38,17 +40,39 @@ train_dataset = datasets.ImageFolder(root=f"{data_path}/Train", transform=transf
 test_dataset = datasets.ImageFolder(root=f"{data_path}/Test", transform=transform)
 
 # Split datasets into loaders
-batch_size = 15
+batch_size = 16
 train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
 test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
-# Display some images
+# Display class-to-index mapping
+print("Class-to-Index Mapping:", train_dataset.class_to_idx)
+
+# Display some images with labels
 def imshow(img):
-    img = img / 2 + 0.5
+    mean = torch.tensor([0.485, 0.456, 0.406]).view(3, 1, 1)
+    std = torch.tensor([0.229, 0.224, 0.225]).view(3, 1, 1)
+    img = img * std + mean
     npimg = img.numpy()
     plt.imshow(np.transpose(npimg, (1, 2, 0)))
     plt.show()
 
 data_iter = iter(train_loader)
 images, labels = next(data_iter)
-imshow(torchvision.utils.make_grid(images[:20]))
+
+# Display images and labels
+imshow(torchvision.utils.make_grid(images[:10]))
+print("Labels:", [list(train_dataset.class_to_idx.keys())[label] for label in labels[:10]])
+
+def filter_loader_by_labels(loader, valid_labels):
+    filtered_images = []
+    filtered_labels = []
+    for images, labels in loader:
+        for i, label in enumerate(labels):
+            if label.item() in valid_labels:  # Keep only valid labels
+                filtered_images.append(images[i])
+                filtered_labels.append(label)
+    return DataLoader(torch.utils.data.TensorDataset(torch.stack(filtered_images), torch.tensor(filtered_labels)),
+                      batch_size=16, shuffle=True)
+
+valid_labels = [train_dataset.class_to_idx['cataracts'], train_dataset.class_to_idx['normal']]
+cataracts_normal_loader = filter_loader_by_labels(train_loader, valid_labels)

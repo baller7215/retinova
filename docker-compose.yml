@@ -1,0 +1,23 @@
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_FIREBASE_CONFIG=<your-firebase-config>
+    volumes:
+      - ./frontend:/app
+    command: npm run dev
+
+  backend:
+    build: ./backend
+    ports:
+      - "5001:5000"
+    volumes:
+      - ./backend:/app
+    command: npm run dev
+
+  # ml-model:
+  #   build: ./ml-model
+  #   ports:
+  #     - "5001:5001"

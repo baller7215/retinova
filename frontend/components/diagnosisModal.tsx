@@ -61,7 +61,7 @@ const DiagnosisModal = ({ isOpen, diagnosis, onClose }: DiagnosisModalProps) => 
                         </div>
                         {showSymptoms &&
                             (diagnosis === 'healthy' ? 
-                                <div className="w-full">
+                                <div className="w-[92%]">
                                     <ul className="list-disc text-left w-full ml-4 text-[#72777d] leading-5 tracking-wider space-y-2">
                                         <li>No abnormalities detected in the eye.</li>
                                         <li>The eye appears healthy with no signs of inflammation, cataracts, or other conditions.</li>
@@ -69,7 +69,7 @@ const DiagnosisModal = ({ isOpen, diagnosis, onClose }: DiagnosisModalProps) => 
                                     </ul>
                                 </div>
                             : diagnosis === 'uveitis' ?
-                                <div className="w-full flex flex-col gap-1">
+                                <div className="w-[92%] flex flex-col gap-1">
                                     <ul className="list-disc text-left w-full ml-4 text-[#72777d] leading-5 tracking-wider space-y-2">
                                         <li>Eye redness.</li>
                                         <li>Pain in or around the eye.</li>
@@ -79,7 +79,7 @@ const DiagnosisModal = ({ isOpen, diagnosis, onClose }: DiagnosisModalProps) => 
                                     </ul>
                                 </div>
                             :
-                            <div className="w-full flex flex-col gap-1">
+                            <div className="w-[92%] flex flex-col gap-1">
                                 <ul className="list-disc text-left w-full ml-4 text-[#72777d] leading-5 tracking-wider space-y-2">
                                     <li>Blurry or cloudy vision.</li>
                                     <li>Sensitivity to bright light or glare.</li>
@@ -113,7 +113,7 @@ const DiagnosisModal = ({ isOpen, diagnosis, onClose }: DiagnosisModalProps) => 
                         </div>
                         {showNextSteps &&
                             (diagnosis === 'healthy' ? 
-                                <div className="w-full">
+                                <div className="w-[92%]">
                                     <ul className="list-decimal text-left w-full ml-5 text-[#72777d] leading-5 tracking-wider space-y-2">
                                         <li>Continue regular eye care practices:
                                             <ul className="list-disc text-left ml-4">
@@ -127,7 +127,7 @@ const DiagnosisModal = ({ isOpen, diagnosis, onClose }: DiagnosisModalProps) => 
                                     </ul>
                                 </div>
                             : diagnosis === 'uveitis' ?
-                                <div className="w-full flex flex-col gap-1">
+                                <div className="w-[92%] flex flex-col gap-1">
                                     <ul className="list-decimal text-left w-full ml-5 text-[#72777d] leading-5 tracking-wider space-y-2">
                                         <li>Avoid rubbing your eyes, as this may worsen irritation.</li>
                                         <li>Rest your eyes and minimize exposure to bright light (use sunglasses indoors or outdoors).</li>
@@ -137,7 +137,7 @@ const DiagnosisModal = ({ isOpen, diagnosis, onClose }: DiagnosisModalProps) => 
                                     </ul>
                                 </div>
                             :
-                            <div className="w-full flex flex-col gap-1">
+                            <div className="w-[92%] flex flex-col gap-1">
                                 <ul className="list-decimal text-left w-full ml-5 text-[#72777d] leading-5 tracking-wider space-y-2">
                                     <li>Avoid bright lights or glare by wearing polarized or anti-glare glasses.</li>
                                     <li>Schedule an appointment with an ophthalmologist to discuss cataract surgery if vision loss affects your daily life.</li>
@@ -154,19 +154,19 @@ const DiagnosisModal = ({ isOpen, diagnosis, onClose }: DiagnosisModalProps) => 
                 <div className="flex justify-between gap-2">
                     <button
                         onClick={() => window.location.href = "/results"}
-                        className="border-[#1d212b] border-[1px] text-white py-2 px-2 rounded shadow-md tracking-wider mt-4"
+                        className="hover:scale-110 cursor-pointer transform duration-300 ease-in-out border-[#1d212b] border-[2px] hover:bg-[#1d212b] hover:border-transparent text-white py-2 px-2 rounded shadow-md tracking-wider mt-4"
                     >
                         <RotateCcw
                             size={25}
                             // onClick={() => setShowNextSteps(false)}
-                            className="hover:scale-110 cursor-pointer transform duration-300 ease-in-out"
+                            className=""
                         />
                     </button>
                     <button
                         onClick={() => window.location.href = "/results"}
-                        className="hover:scale-105 cursor-pointer transform duration-300 ease-in-out bg-[#1d212b] hover:border-[#1d212b] hover:border-[1px] text-white py-2 px-4 rounded shadow-lg tracking-wider mt-4"
+                        className="hover:scale-105 cursor-pointer transform duration-300 ease-in-out bg-[#1d212b] border-[2px] border-transparent hover:border-[#1d212b] border-[2px] hover:bg-transparent text-white py-2 px-4 rounded shadow-lg tracking-wider mt-4"
                     >
-                        View Nearby Clinical Services
+                        Nearby Clinical Services
                     </button>
                 </div>
                 

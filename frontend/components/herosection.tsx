@@ -3,14 +3,43 @@
 import { Button } from "@mui/material";
 import { BsArrowUpRightCircle } from "react-icons/bs";
 import Image from "next/image";
+import { motion } from "motion/react";
+
 
 
 export default function HeroSection() {
   return (
         <div className="md:flex grid md:flex-cols-2 md:pl-36 py-1 md:py-16 font-sans">
             {/* Left Section: Text and Button Content */}
-            <div>
-                <div className="flex flex-col w-11/12 md:w-2/3 text-center md:text-left text-balance gap-6 mx-auto md:mx-0">
+            <motion.div
+                variants= {{
+                    hidden: { opacity: 0 },
+                    show: {
+                      opacity: 1,
+                      transition: {
+                        delay: 0,
+                        staggerChildren: 0.3,
+                        ease: "easeInOut"
+                      },
+                    },
+                  }}
+                  initial="hidden"
+                  animate="show"
+            >
+                <motion.div
+                    variants={{
+                        hidden: { opacity: 0, y: 30 },
+                        show: {
+                            opacity: 1,
+                            y: 0,
+                            transition: {
+                                duration: 0.8,
+                                ease: "easeInOut"
+                            }
+                        },
+                    }}
+                    className="flex flex-col w-11/12 md:w-2/3 text-center md:text-left text-balance gap-6 mx-auto md:mx-0"
+                >
                     <h1 className="text-3xl md:text-6xl leading-snug font-medium mx-auto md:mx-0">
                         EARLY
                         <br />
@@ -31,8 +60,21 @@ export default function HeroSection() {
                         loss of peripheral vision, or a visible tumor. Early detection is
                         crucial for improving outcomes and preserving vision.
                     </p>
-                    </div>
-                <div className="mt-4 md:mt-8 w-11/12 md:w-2/3 flex justify-between mx-auto md:mx-0">
+                </motion.div>
+                <motion.div
+                    variants={{
+                        hidden: { opacity: 0, y: 30 },
+                        show: {
+                            opacity: 1,
+                            y: 0,
+                            transition: {
+                                delay: 0.8,
+                                ease: "easeInOut"
+                            }
+                        },
+                    }}
+                    className="mt-4 md:mt-8 w-11/12 md:w-2/3 flex justify-between mx-auto md:mx-0"
+                >
                     <Button
                     href="/services"
                     variant="contained"
@@ -68,15 +110,15 @@ export default function HeroSection() {
                     Get Started
                     <BsArrowUpRightCircle className="hover:animate-spin text-[#F9C7FF]" style={{fontSize: "26px"}}/>
                     </Button>
-                </div>
-            </div>
+                </motion.div>
+            </motion.div>
             {/* Right Content: Image */}
             <Image
-            src="/eye.png"
-            alt="Eye Image"
-            width={1200} 
-            height={400}
-            className="hidden md:block md:max-h-[60vh]"
+                src="/eye.png"
+                alt="Eye Image"
+                width={1200} 
+                height={400}
+                className="hidden md:block md:max-h-[60vh]"
             />
         </div>
   );

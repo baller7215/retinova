@@ -1,25 +1,43 @@
 from flask import Flask, request, jsonify
+# from flask_asgi import ASGIApp
+from flask_socketio import SocketIO
 from PIL import Image
 import torch
+import torch.nn as nn
 from torchvision import transforms
 import cv2
 import numpy as np
 import io
 import base64
-from app import SimpleCNN
+# from app import SimpleCNN
+
+class SimpleCNN(nn.Module):
+    def __init__(self, num_classes):
+        super(SimpleCNN, self).__init__()
+        self.features = nn.Sequential(
+            nn.Conv2d(3, 16, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.Conv2d(16, 32, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2)
+        )
+        self.classifier = nn.Sequential(
+            nn.Linear(32 * 56 * 56, 256),
+            nn.ReLU(),
+            nn.Dropout(0.5),
+            nn.Linear(256, num_classes)
+        )
+
+    def forward(self, x):
+        x = self.features(x)
+        x = x.view(x.size(0), -1)
+        x = self.classifier(x)
+        return x
+
 
 app = Flask(__name__)
-
-# Load models
-# cataracts_model = torch.load('cataracts_model.pth', map_location=torch.device('cpu'))
-# uveitis_model = torch.load('uveitis_model.pth', map_location=torch.device('cpu'))
-
-# # Preprocessing
-# transform = transforms.Compose([
-#     transforms.Resize((224, 224)),
-#     transforms.ToTensor(),
-#     transforms.Normalize(mean=[0.5], std=[0.5])
-# ])
+socketio = SocketIO(app)
 
 
 @app.route('/')
@@ -92,5 +110,7 @@ def predict():
         })
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
 if __name__ == '__main__':
-    app.run(debug=True)
+   socketio.run(app, host="0.0.0.0", port=8000)

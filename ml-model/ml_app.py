@@ -1,32 +1,27 @@
-from flask import Flask, request, jsonify
-# from flask_asgi import ASGIApp
-from flask_socketio import SocketIO
+from fastapi import FastAPI, File, UploadFile, HTTPException
 from PIL import Image
 import torch
-import torch.nn as nn
-from torchvision import transforms
-import cv2
 import numpy as np
-import io
-import base64
-# from app import SimpleCNN
+from torchvision import transforms
 
-class SimpleCNN(nn.Module):
+app = FastAPI()
+
+class SimpleCNN(torch.nn.Module):
     def __init__(self, num_classes):
         super(SimpleCNN, self).__init__()
-        self.features = nn.Sequential(
-            nn.Conv2d(3, 16, kernel_size=3, stride=1, padding=1),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-            nn.Conv2d(16, 32, kernel_size=3, stride=1, padding=1),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=2)
+        self.features = torch.nn.Sequential(
+            torch.nn.Conv2d(3, 16, kernel_size=3, stride=1, padding=1),
+            torch.nn.ReLU(),
+            torch.nn.MaxPool2d(kernel_size=2, stride=2),
+            torch.nn.Conv2d(16, 32, kernel_size=3, stride=1, padding=1),
+            torch.nn.ReLU(),
+            torch.nn.MaxPool2d(kernel_size=2, stride=2)
         )
-        self.classifier = nn.Sequential(
-            nn.Linear(32 * 56 * 56, 256),
-            nn.ReLU(),
-            nn.Dropout(0.5),
-            nn.Linear(256, num_classes)
+        self.classifier = torch.nn.Sequential(
+            torch.nn.Linear(32 * 56 * 56, 256),
+            torch.nn.ReLU(),
+            torch.nn.Dropout(0.5),
+            torch.nn.Linear(256, num_classes)
         )
 
     def forward(self, x):
@@ -36,44 +31,24 @@ class SimpleCNN(nn.Module):
         return x
 
 
-app = Flask(__name__)
-socketio = SocketIO(app)
+@app.get("/")
+def read_root():
+    return {"message": "ML API is running!"}
 
 
-@app.route('/')
-def home():
-    return "ML API is running!"
-
-
-@app.route('/predict', methods=['POST'])
-def predict():
-    file = request.files.get('file')
-    if not file:
-        return jsonify({"error": "No file uploaded"}), 400
-
+@app.post("/predict")
+async def predict(file: UploadFile = File(...)):
     try:
-        # Read the uploaded image
-        img = Image.open(file.stream).convert("RGB")
+        # Load the image
+        image = Image.open(file.file).convert("RGB")
 
-        # Convert to grayscale
-        img_gray = cv2.cvtColor(np.array(img), cv2.COLOR_RGB2GRAY)
-        img_gray = Image.fromarray(img_gray)
-
-        # Apply sharpening
-        kernel = np.array([[-1, -1, -1],
-                           [-1,  9, -1],
-                           [-1, -1, -1]])
-        img_sharpened = cv2.filter2D(np.array(img_gray), -1, kernel)
-        img_sharpened = cv2.cvtColor(img_sharpened, cv2.COLOR_GRAY2RGB)  # Convert back to 3 channels
-        img_sharpened = Image.fromarray(img_sharpened)
-
-        # Transform the image to a tensor
+        # Apply preprocessing
         transform = transforms.Compose([
             transforms.Resize((224, 224)),
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         ])
-        img_tensor = transform(img_sharpened).unsqueeze(0)
+        img_tensor = transform(image).unsqueeze(0)
 
         # Load the models
         cataracts_model = SimpleCNN(num_classes=2)
@@ -84,6 +59,7 @@ def predict():
         uveitis_model.load_state_dict(torch.load("uveitis_model.pth"))
         uveitis_model.eval()
 
+        # Run predictions
         with torch.no_grad():
             output_cataracts = cataracts_model(img_tensor)
             probabilities_cataracts = torch.nn.functional.softmax(output_cataracts, dim=1)
@@ -98,19 +74,21 @@ def predict():
             uveitis_label = "Uveitis" if pred_uveitis.item() == 1 else "Normal"
             uveitis_confidence = probabilities_uveitis[0][pred_uveitis.item()].item()
 
-        return jsonify({
+        return {
             "cataracts_prediction": {
                 "label": cataracts_label,
                 "confidence": round(cataracts_confidence * 100, 2)
             },
             "uveitis_prediction": {
                 "label": uveitis_label,
-                "confidence": round(uveitis_confidence * 100, 2) 
+                "confidence": round(uveitis_confidence * 100, 2)
             }
-        })
+        }
+
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        raise HTTPException(status_code=500, detail=f"Error during prediction: {str(e)}")
 
 
-if __name__ == '__main__':
-   socketio.run(app, host="0.0.0.0", port=8000)
+
+# test
+# curl -X POST -F "file=@/Users/leonardosiu/projects/irvinehacks2025/retinova/frontend/public/cataracts.jpeg" http://localhost:8000/predict

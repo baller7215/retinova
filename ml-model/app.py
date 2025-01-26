@@ -102,7 +102,7 @@ class SimpleCNN(nn.Module):
         x = self.classifier(x)
         return x
 
-num_classes = 2  # 'cataracts' and 'normal'
+num_classes = 2
 model = SimpleCNN(num_classes)
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
@@ -131,9 +131,9 @@ def train_model(model, loader, num_epochs=10):
         print(f"Epoch {epoch + 1}/{num_epochs}, Loss: {running_loss / len(loader)}, Accuracy: {100 * correct / total:.2f}%")
 
 # Train the model using cataracts_normal_loader
-train_model(model, cataracts_normal_loader, num_epochs=10)
+train_model(model, cataracts_normal_loader, num_epochs=30)
 
-num_classes = 2  # 'normal' and 'uveitis'
+num_classes = 2 
 normal_uveitis_model = SimpleCNN(num_classes)
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(normal_uveitis_model.parameters(), lr=0.001)
@@ -160,22 +160,22 @@ def train_model_for_uveitis(model, loader, num_epochs=10):
 
         print(f"Epoch {epoch + 1}/{num_epochs}, Loss: {running_loss / len(loader)}, Accuracy: {100 * correct / total:.2f}%")
 
-train_model_for_uveitis(normal_uveitis_model, normal_uveitis_loader, num_epochs=15)
+train_model_for_uveitis(normal_uveitis_model, normal_uveitis_loader, num_epochs=30)
 
 #test models
 def test_model(model, loader, valid_labels):
-    model.eval()  # Set the model to evaluation mode
+    model.eval()  
     correct = 0
     total = 0
-    with torch.no_grad():  # Disable gradient computation for testing
+    with torch.no_grad(): 
         for inputs, labels in loader:
-            # Convert labels to binary values (0 and 1)
+        
             labels = torch.tensor([0 if l.item() == valid_labels[0] else 1 for l in labels])
 
-            outputs = model(inputs)  # Forward pass
-            _, predicted = torch.max(outputs, 1)  # Get predicted labels
-            total += labels.size(0)  # Total number of samples
-            correct += (predicted == labels).sum().item()  # Count correct predictions
+            outputs = model(inputs) 
+            _, predicted = torch.max(outputs, 1) 
+            total += labels.size(0) 
+            correct += (predicted == labels).sum().item()
 
     accuracy = 100 * correct / total
     print(f"Test Accuracy: {accuracy:.2f}%"

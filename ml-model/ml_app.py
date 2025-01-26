@@ -1,9 +1,12 @@
 from flask import Flask, request, jsonify
-# import torch
-# from torchvision import transforms
-# from PIL import Image
+from PIL import Image
+import torch
+from torchvision import transforms
+import cv2
+import numpy as np
 import io
 import base64
+from app import SimpleCNN
 
 app = Flask(__name__)
 
@@ -26,32 +29,68 @@ def home():
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    # data = request.json
-    # if 'image' not in data:
-    #     return jsonify({'error': 'No image provided'}), 400
+    file = request.files.get('file')
+    if not file:
+        return jsonify({"error": "No file uploaded"}), 400
 
-    # # Decode the image
-    # image_data = data['image']
-    # image_bytes = base64.b64decode(image_data.split(",")[1])
-    # image = Image.open(io.BytesIO(image_bytes)).convert('RGB')
+    try:
+        # Read the uploaded image
+        img = Image.open(file.stream).convert("RGB")
 
-    # # Preprocess the image
-    # input_tensor = transform(image).unsqueeze(0)
+        # Convert to grayscale
+        img_gray = cv2.cvtColor(np.array(img), cv2.COLOR_RGB2GRAY)
+        img_gray = Image.fromarray(img_gray)
 
-    # # Predict with both models
-    # cataracts_output = cataracts_model(input_tensor)
-    # uveitis_output = uveitis_model(input_tensor)
+        # Apply sharpening
+        kernel = np.array([[-1, -1, -1],
+                           [-1,  9, -1],
+                           [-1, -1, -1]])
+        img_sharpened = cv2.filter2D(np.array(img_gray), -1, kernel)
+        img_sharpened = cv2.cvtColor(img_sharpened, cv2.COLOR_GRAY2RGB)  # Convert back to 3 channels
+        img_sharpened = Image.fromarray(img_sharpened)
 
-    # # Interpret resul
-    # cataracts_pred = torch.argmax(cataracts_output, dim=1).item()
-    # uveitis_pred = torch.argmax(uveitis_output, dim=1).item()
+        # Transform the image to a tensor
+        transform = transforms.Compose([
+            transforms.Resize((224, 224)),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+        ])
+        img_tensor = transform(img_sharpened).unsqueeze(0)
 
-    # result = {
-    #     'cataracts': cataracts_pred,
-    #     'uveitis': uveitis_pred
-    # }
-    # return jsonify(result)
-    return "hello"
+        # Load the models
+        cataracts_model = SimpleCNN(num_classes=2)
+        cataracts_model.load_state_dict(torch.load("cataracts_model.pth"))
+        cataracts_model.eval()
 
+        uveitis_model = SimpleCNN(num_classes=2)
+        uveitis_model.load_state_dict(torch.load("uveitis_model.pth"))
+        uveitis_model.eval()
+
+        with torch.no_grad():
+            output_cataracts = cataracts_model(img_tensor)
+            probabilities_cataracts = torch.nn.functional.softmax(output_cataracts, dim=1)
+            _, pred_cataracts = torch.max(probabilities_cataracts, 1)
+            cataracts_label = "Cataracts" if pred_cataracts.item() == 0 else "Normal"
+            cataracts_confidence = probabilities_cataracts[0][pred_cataracts.item()].item()
+
+        with torch.no_grad():
+            output_uveitis = uveitis_model(img_tensor)
+            probabilities_uveitis = torch.nn.functional.softmax(output_uveitis, dim=1)
+            _, pred_uveitis = torch.max(probabilities_uveitis, 1)
+            uveitis_label = "Uveitis" if pred_uveitis.item() == 1 else "Normal"
+            uveitis_confidence = probabilities_uveitis[0][pred_uveitis.item()].item()
+
+        return jsonify({
+            "cataracts_prediction": {
+                "label": cataracts_label,
+                "confidence": round(cataracts_confidence * 100, 2)
+            },
+            "uveitis_prediction": {
+                "label": uveitis_label,
+                "confidence": round(uveitis_confidence * 100, 2) 
+            }
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 if __name__ == '__main__':
     app.run(debug=True)

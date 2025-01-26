@@ -16,18 +16,28 @@ export default function Services() {
   const [clinics, setClinics] = useState([]); // Store clinic data
   const [userLocation, setUserLocation] = useState({ lat: 33.648821, lon: -117.842844 }); // Default location (Irvine)
   const [customIcon, setCustomIcon] = useState(null); // State for the Leaflet custom icon
+  const [userIcon, setUserIcon] = useState(null); // State for the user's custom icon
 
   // Dynamically load Leaflet and create customIcon
   useEffect(() => {
     import("leaflet").then((L) => {
-      const icon = new L.Icon({
+      const clinicIcon = new L.Icon({
         iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
         iconSize: [25, 41],
         iconAnchor: [12, 41],
         shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
         shadowSize: [41, 41],
       });
-      setCustomIcon(icon);
+      setCustomIcon(clinicIcon);
+
+      const userLocationIcon = new L.Icon({
+        iconUrl: "https://cdn2.iconfinder.com/data/icons/social-media-8/512/pointer.png", // Different color for user
+        iconSize: [50, 50],
+        iconAnchor: [50, 50],
+        shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+        shadowSize: [41, 30],
+      });
+      setUserIcon(userLocationIcon);
     });
   }, []);
 
@@ -88,7 +98,7 @@ export default function Services() {
         <MapContainer
           center={[userLocation.lat, userLocation.lon]}
           zoom={13}
-          style={{ width: "70%", height: "300px" }}
+          style={{ width: "75%", height: "50vh" }}
           className="rounded-lg shadow-md"
         >
           {/* Tile Layer */}
@@ -97,7 +107,16 @@ export default function Services() {
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           />
 
-          {/* Markers for Clinics */}
+          {/* User Location Marker */}
+          {userIcon && (
+            <Marker position={[userLocation.lat, userLocation.lon]} icon={userIcon}>
+              <Popup>
+                <strong>Your Location</strong>
+              </Popup>
+            </Marker>
+          )}
+
+          {/* Clinic Markers */}
           {customIcon &&
             clinics.map((clinic, index) => (
               <Marker key={index} position={[clinic.lat, clinic.lon]} icon={customIcon}>

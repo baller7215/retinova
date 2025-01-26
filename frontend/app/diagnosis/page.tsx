@@ -46,7 +46,7 @@ export default function Diagnosis() {
                     </div>
                     <div className="flex md:gap-2">
                         <div className="flex flex-row md:flex-col gap-2 md:gap-0 w-2/5 md:w-1/6">
-                            <p className="font-semibold text-xl md:text-4xl my-auto">80%</p>
+                            <p className="font-semibold text-xl md:text-4xl my-auto">95%</p>
                             <div className="flex flex-col">
                                 <p className="font-light text-sm md:text-lg my-auto">Confidence</p>
                                 <p className="font-light text-sm md:text-lg my-auto">Score</p>

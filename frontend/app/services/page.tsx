@@ -55,6 +55,7 @@ export default function Services() {
 
   // Fetch clinic data from the API
   useEffect(() => {
+    console.log("Backend URL:", process.env.NEXT_PUBLIC_BACKEND_URL);
     async function fetchClinics() {
       try {
         console.log("Backend URL:", process.env.NEXT_PUBLIC_BACKEND_URL);

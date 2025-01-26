@@ -12,7 +12,7 @@ export default function Footer() {
             <p>irvine hacks '25</p>
         </div>
         <div>
-        <Link href="https://github.com/baller7215/resinova" target="_blank" rel="noopener noreferrer">
+        <Link href="https://github.com/baller7215/retinova" target="_blank" rel="noopener noreferrer">
           <FaGithub className="w-5 md:w-10 h-5 md:h-10 hover:text-gray-400" />
         </Link>
       </div>

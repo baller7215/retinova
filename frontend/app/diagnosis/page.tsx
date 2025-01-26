@@ -13,6 +13,12 @@ import { motion } from "motion/react";
 
 export default function Diagnosis() {
     const [open, setOpen] = useState<boolean>(false);
+    const [diagnosis, setDiagnosis] = useState<string[]>([]);
+
+    const handleDiagnose = (result: string[]) => {
+        setDiagnosis(result);
+        setOpen(true);
+    };
 
     return (
         <div className="md:flex grid md:flex-cols-2 md:pl-36 py-1 md:py-4 font-sans">
@@ -73,7 +79,7 @@ export default function Diagnosis() {
                 >
                     <p className="text-2xl md:text-6xl font-extrabold absolute top-10 md:top-28 -left-1 md:-left-20 rotate-90">PATIENT</p>
                     <p className="text-2xl md:text-6xl font-extrabold absolute -bottom-5 md:-bottom-10 left-10 md:left-6">IMAGING</p>
-                    <DiagnosisButton />
+                    <DiagnosisButton onDiagnose={handleDiagnose} />
                     <hr className="absolute -bottom-3 md:-bottom-6 right-1 md:right-5 w-1/2 border-t-4 border-[#FFFFFF] rounded-full" />
                 </motion.div>
                 {/* Statistics */}
@@ -120,7 +126,7 @@ export default function Diagnosis() {
                 height={100}
                 className="hidden md:block md:max-h-[60vh]"
             />
-            <DiagnosisModal isOpen={open} onClose={() => {setOpen(false)}} diagnosis="cataracts" />
+            <DiagnosisModal isOpen={open} onClose={() => setOpen(false)} diagnosis={diagnosis} />
 
         </div>     
     );

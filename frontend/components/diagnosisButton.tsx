@@ -5,43 +5,50 @@ import { Button, Modal, Box, Typography } from "@mui/material";
 import { BsArrowUpRightCircle } from "react-icons/bs";
 import { FaCamera } from "react-icons/fa";
 import { FaRegFileAlt } from "react-icons/fa";
-import CameraModal from "./cameraModal"
+import CameraModal from "./cameraModal";
 
-export default function DiagnosisButton() {
+export default function DiagnosisButton({ onDiagnose }: { onDiagnose: (diagnosis: string[]) => void }) {
   const [open, setOpen] = useState(false);
   const [cameraOpen, setCameraOpen] = useState(false);
-  const [photo, setPhoto] = useState<string | null>(null);
 
   const fileInputRef = React.createRef<HTMLInputElement>();
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
-  const handleFileUpload = () => {
-    fileInputRef.current?.click();
-    handleClose();
-  };
-
-  const handleTakePhoto = () => {
-    setCameraOpen(true);
-  };
-
-  const handlePhotoCapture = async (photo: string) => {
-    try {
-      const response = await fetch("http://localhost:5000/predict", {
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const formData = new FormData();
+      formData.append("file", file);
+  
+      try {
+        const response = await fetch("http://localhost:8000/predict", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ image: photo }),
-      });
-      const result = await response.json();
-      console.log("Prediction Results:", result);
-
-      // Handle results (e.g., display them to the user)
-      alert(`Cataracts: ${result.cataracts}, Uveitis: ${result.uveitis}`);
-    } catch (error) {
+          body: formData,
+        });
+  
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+  
+        const result = await response.json();
+        console.log("API Response:", result);
+  
+        const diagnosisLabels = [
+          result.cataracts_prediction.label,
+          result.uveitis_prediction.label,
+        ];
+  
+        onDiagnose(diagnosisLabels);
+        setOpen(false);
+      } catch (error) {
         console.error("Error during prediction:", error);
+        onDiagnose(["Error occurred"]);
+        setOpen(false);
+      }
     }
   };
+  
+
+  const handleTakePhoto = () => setCameraOpen(true);
 
   return (
     <div>
@@ -59,16 +66,14 @@ export default function DiagnosisButton() {
             transform: "scale(1.05)",
           },
         }}
-        onClick={handleOpen}
+        onClick={() => setOpen(true)}
       >
         GET DIAGNOSIS
-        <BsArrowUpRightCircle
-          className="hover:animate-spin text-[#F9C7FF] text-base md:text-2xl"
-        />
+        <BsArrowUpRightCircle className="hover:animate-spin text-[#F9C7FF] text-base md:text-2xl" />
       </Button>
 
       {/* Modal */}
-      <Modal open={open} onClose={handleClose}>
+      <Modal open={open} onClose={() => setOpen(false)}>
         <Box
           sx={{
             position: "absolute",
@@ -86,88 +91,48 @@ export default function DiagnosisButton() {
             textAlign: "center",
           }}
         >
-          {/* Close Button */}
-          <button
-            onClick={handleClose}
-            style={{
-              position: "absolute",
-              top: "16px",
-              right: "16px",
-              background: "none",
-              color: "#FFFFFF",
-            }}
-          >
-            ✕
-          </button>
-
-          {/* Modal Header */}
-          <Typography
-            variant="h6"
-            component="h2"
-            sx={{
-              mb: 3,
-              fontSize: "20px",
-              fontWeight: "bold",
-              textTransform: "uppercase",
-              letterSpacing: "1px",
-            }}
-          >
+          <Typography variant="h6" component="h2" sx={{ mb: 3, fontSize: "20px", fontWeight: "bold" }}>
             Choose an Option
           </Typography>
 
-          {/* Buttons */}
           <div className="flex gap-5">
             <Button
-                variant="contained"
-                fullWidth
-                onClick={handleTakePhoto}
-                sx={{
-                mb: 2,
+              variant="contained"
+              fullWidth
+              onClick={handleTakePhoto}
+              sx={{
                 bgcolor: "#21252E",
                 border: "1px solid #FFFFFF",
-                borderRadius: "8px",
                 color: "#FFFFFF",
-                fontWeight: "bold",
-                transition: "transform 0.3s ease",
-                padding: {xs:"5px", md:"16px"},
+                padding: "16px",
                 "&:hover": { transform: "scale(1.05)" },
-                }}
+              }}
             >
-                <div className="flex flex-col gap-3">
-                    <FaCamera className="text-4xl md:text-6xl mx-auto"/>
-                    Take Photo
-                </div>
+              <FaCamera className="text-6xl mx-auto" />
+              Take Photo
             </Button>
             <Button
-                variant="contained"
-                fullWidth
-                onClick={handleFileUpload}
-                sx={{
-                mb: 2,
+              variant="contained"
+              fullWidth
+              onClick={() => fileInputRef.current?.click()}
+              sx={{
                 bgcolor: "#21252E",
                 border: "1px solid #FFFFFF",
-                borderRadius: "8px",
                 color: "#FFFFFF",
-                fontWeight: "bold",
-                transition: "transform 0.3s ease",
+                padding: "16px",
                 "&:hover": { transform: "scale(1.05)" },
-                }}
+              }}
             >
-                <div className="flex flex-col gap-3">
-                    <FaRegFileAlt className="text-4xl md:text-6xl mx-auto"/>
-                    Upload File
-                </div>
+              <FaRegFileAlt className="text-6xl mx-auto" />
+              Upload File
             </Button>
           </div>
 
-          {/* Hidden File Input */}
           <input
             type="file"
             ref={fileInputRef}
             style={{ display: "none" }}
-            onChange={(e) => {
-              console.log("File uploaded:", e.target.files?.[0]);
-            }}
+            onChange={handleFileUpload}
           />
         </Box>
       </Modal>
@@ -176,7 +141,20 @@ export default function DiagnosisButton() {
       <CameraModal
         open={cameraOpen}
         onClose={() => setCameraOpen(false)}
-        onCapture={handlePhotoCapture}
+        onCapture={async (photo: string) => {
+          try {
+            const response = await fetch("http://localhost:8000/predict", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ image: photo }),
+            });
+            const result = await response.json();
+            onDiagnose(result.diagnosis || "unknown");
+          } catch (error) {
+            console.error("Error during prediction:", error);
+            onDiagnose(["error"]);
+          }
+        }}
       />
     </div>
   );

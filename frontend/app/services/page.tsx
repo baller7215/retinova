@@ -15,14 +15,22 @@ const TileLayer = dynamic(() => import("react-leaflet").then((mod) => mod.TileLa
 const Marker = dynamic(() => import("react-leaflet").then((mod) => mod.Marker), { ssr: false });
 const Popup = dynamic(() => import("react-leaflet").then((mod) => mod.Popup), { ssr: false });
 
-export default function Services() {
-  const [clinics, setClinics] = useState([]); // Store clinic data
-  const [userLocation, setUserLocation] = useState({ lat: 33.648821, lon: -117.842844 }); // Default location (Irvine)
-  const [customIcon, setCustomIcon] = useState(null); // State for the Leaflet custom icon
-  const [userIcon, setUserIcon] = useState(null); // State for the user's custom icon
-  const [loading, setLoading] = useState(true); // State for if map is loading
 
-  // Dynamically load Leaflet and create customIcon
+type Clinic = {
+  lat: number;
+  lon: number;
+  name: string;
+  address: string;
+};
+
+export default function Services() {
+  const [clinics, setClinics] = useState<Clinic[]>([]);
+  const [userLocation, setUserLocation] = useState({ lat: 33.648821, lon: -117.842844 }); // set default location to uci
+  const [customIcon, setCustomIcon] = useState<L.Icon | null>(null);
+  const [userIcon, setUserIcon] = useState<L.Icon | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  // load Leaflet and create customIcon
   useEffect(() => {
     import("leaflet").then((L) => {
       const clinicIcon = new L.Icon({

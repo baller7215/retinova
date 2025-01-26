@@ -21,7 +21,8 @@ export default function CameraModal({ open, onClose, onCapture }: CameraModalPro
             videoRef.current.play();
         }
         } catch (err) {
-        onClose();
+          onClose();
+          throw err;
         }
     };
 

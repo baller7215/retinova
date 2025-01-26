@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY package.json package-lock.json ./
 
-RUN npm install --production
+RUN npm install --omit=dev=false
 
 COPY . .
 
@@ -12,5 +12,4 @@ RUN npm run build
 
 EXPOSE 3000
 
-# production mode
 CMD ["npm", "run", "start"]

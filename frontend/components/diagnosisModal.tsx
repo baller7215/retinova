@@ -8,10 +8,11 @@ export interface DiagnosisModalProps {
     diagnosis: string[],
 };
 
-const diagnosisOverview = {
-    "Uveitis": "Uveitis is inflammation of the uvea, the middle layer of the eye.",
-    "Cataracts": "Cataracts occur when the eye's natural lens becomes cloudy, leading to impaired vision."
-}
+const diagnosisOverview: { [key: string]: string } = {
+    Uveitis: "Uveitis is inflammation of the uvea, the middle layer of the eye.",
+    Cataracts: "Cataracts occur when the eye's natural lens becomes cloudy, leading to impaired vision.",
+};
+  
 
 
 const DiagnosisModal = ({ isOpen, diagnosis, onClose }: DiagnosisModalProps) => {

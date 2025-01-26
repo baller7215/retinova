@@ -9,7 +9,7 @@ export default function Footer() {
     <footer className="absolute flex text-[#858585] font-sans bottom-1 md:bottom-2 py-1 md:py-0 px-2 md:px-6 w-full justify-center md:justify-end items-center gap-2 md:gap-4 mt-auto">
         <div className="flex flex-col text-xs md:text-xl">
             <a href="https://www.youtube.com/watch?v=phuiiNCxRMg" target="_blank" className="text-center">made w/ 💥</a>
-            <p>irvine hacks '25</p>
+            <p>irvine hacks &apos;25</p>
         </div>
         <div>
         <Link href="https://github.com/baller7215/retinova" target="_blank" rel="noopener noreferrer">

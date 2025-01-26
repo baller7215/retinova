@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { easeInOut, motion } from "motion/react";
+import { motion } from "motion/react";
 
 export default function Navbar() {
   const pathName = usePathname();

@@ -122,30 +122,30 @@ export default function Services() {
             Welcome to RetiNova’s map feature, where we utilize Nominatim with OpenStreetMap, the Overpass API, and Leaflet to connect you with nearby trusted experts.
             </p>
           </div>
-          <div className="flex justify-end">
-          <Button
-            href="https://www.google.com/maps/search/optometry+near+me/"
-            target="_blank"
-            variant="text"
-            sx={{
-              color: "#FFFFFF",
-              display: "flex",
-              gap: "10px",
-              alignItems: "center",
-              fontSize: { xs: "16px", md: "18px" },
-              transition: "transform 0.3s ease",
-              "&:hover": {
-                transform: "scale(1.05)",
-              },
-              borderRadius: "20px",
-              padding: "4px 24px",
-              border: "2px solid",
-              borderColor: "#F9C7FF",
-            }}
-          >
-            MAPS
-            <MdLocationOn className="text-[#F9C7FF]" style={{ fontSize: "24px" }} />
-          </Button>
+          <div className="flex justify-end mt-3 md:mt-0 mx-auto md:mx-0">
+            <Button
+              href="https://www.google.com/maps/search/optometry+near+me/"
+              target="_blank"
+              variant="text"
+              sx={{
+                color: "#FFFFFF",
+                display: "flex",
+                gap: "10px",
+                alignItems: "center",
+                fontSize: { xs: "12px", md: "18px" },
+                transition: "transform 0.3s ease",
+                "&:hover": {
+                  transform: "scale(1.05)",
+                },
+                borderRadius: "20px",
+                padding: "4px 24px",
+                border: "2px solid",
+                borderColor: "#F9C7FF",
+              }}
+            >
+              MAPS
+              <MdLocationOn className="text-[#F9C7FF]" style={{ fontSize: "24px" }} />
+            </Button>
           </div>
         </motion.div>
 
@@ -167,10 +167,12 @@ export default function Services() {
             <Box
               sx={{
                 width: "75%",
-                height: "50vh",
+                height: {xs:"30vh", md:"50vh"},
                 borderRadius: "8px",
                 boxShadow: "0 2px 8px rgba(0, 0, 0, 0.2)",
                 overflow: "hidden",
+                margin: {xs: "auto", md: "0"},
+                marginTop: {xs: "10px", md: "0"}
               }}
             >
               <Skeleton

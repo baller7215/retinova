@@ -14,25 +14,7 @@ RetiNova is an AI-driven application designed to provide users with a fast and e
 - Displays confidence percentages for diagnosis accuracy
 
 ## 🛠️ Tech Stack
-### Frontend
-- React.js
-- Next.js
-- Tailwind CSS
-- Material UI
-- Framer Motion
-### Backend
-- Node.js
-- Express.js
-- Python
-- Flask
-### AI
-- OpenCV
-- PyTorch
-- NumPy
-### Deployment
-- Docker
-- Vercel
-- Render
+![Tech Stack](frontend/public/techstack.png)
 
 ## 🖥️ How to Use
 ### Prerequisites

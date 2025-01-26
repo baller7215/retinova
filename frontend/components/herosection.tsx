@@ -15,16 +15,16 @@ export default function HeroSection() {
                 variants= {{
                     hidden: { opacity: 0 },
                     show: {
-                      opacity: 1,
-                      transition: {
-                        delay: 0,
-                        staggerChildren: 0.3,
-                        ease: "easeInOut"
-                      },
+                        opacity: 1,
+                        transition: {
+                            delay: 0,
+                            staggerChildren: 0.3,
+                            ease: "easeInOut"
+                        },
                     },
-                  }}
-                  initial="hidden"
-                  animate="show"
+                }}
+                initial="hidden"
+                animate="show"
             >
                 <motion.div
                     variants={{

@@ -40,18 +40,6 @@ export default function Navbar() {
 
         {/* Nav Links */}
         <motion.div
-          // variants={{
-          //   hidden: { opacity: 0 },
-          //   show: {
-          //     opacity: 1,
-          //     // y: 0,
-          //     transition: {
-          //       staggerChildren: 0.5,
-          //       duration: 1,
-          //       delay: 0.5,
-          //     }
-          //   }
-          // }}
           variants= {{
             hidden: { opacity: 0 },
             show: {
@@ -64,20 +52,9 @@ export default function Navbar() {
           }}
           initial="hidden"
           animate="show"
-          // initial={{ opacity: 0, y: -30 }}
-          // animate={{ opacity: 1, y: 0 }}
-          // transition={{
-          //   duration: 0.8,
-          //   delay: 0.5,
-          //   ease: [0, 0.71, 0.2, 1.01],
-          // }}
           className="flex flex-col md:flex-row gap-1 md:gap-10 text-xl md:text-4xl text-[#858585] text-right font-sans font-light"
         >
           <motion.div
-            // variants={{
-            //   hidden: { opacity: 0, y: 30 },
-            //   show: { opacity: 1, y: 0 }
-            // }}
             variants={{
               hidden: { opacity: 0, y: 30 },
               show: {

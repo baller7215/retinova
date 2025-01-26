@@ -77,19 +77,19 @@ export default function Services() {
   return (
     <div className="md:flex grid md:flex-cols-2 md:pl-36 py-1 md:py-4 font-sans">
       {/* Left Section: Description */}
-      <div className="flex flex-col gap-5 w-5/6">
-        <hr className="w-3/4 border-t-2 border-[#FFFFFF] mb-4" />
-        <div className="flex flex-col mt-2 gap-2 w-3/4 text-right">
+      <div className="flex flex-col gap-2 md:gap-5 w-full md:w-5/6">
+        <hr className="w-3/4 border-t-2 border-[#FFFFFF] mb-4 mx-auto md:mx-0" />
+        <div className="flex flex-col mt-2 gap-2 w-full md:w-3/4 text-center md:text-right">
           <div className="flex gap-10">
-            <div className="flex flex-col w-4/5">
-              <p className="font-semibold text-2xl text-left">Find Trusted Nearby Optometry Clinics</p>
+            <div className="flex flex-col w-full md:w-4/5">
+              <p className="font-semibold text-2xl text-center md:text-left mx-auto md:mx-0 px-6 md:px-0">Find Trusted Nearby Optometry Clinics</p>
             </div>
-            <p className="w-/5 text-left">
+            <p className="hidden display:block w-/5 text-left">
               Welcome to RetiNova’s map feature, where we utilize OpenStreetMap to provide you with
               nearby trusted experts. It is always recommended to seek out professional advice.
             </p>
           </div>
-          <button className="mt-4 mb-3 py-2 px-6 w-1/5 bg-white text-black font-medium rounded-full hover:bg-gray-200 transition">
+          <button className="hidden md:block mt-4 mb-3 py-2 px-6 w-1/5 bg-white text-black font-medium rounded-full hover:bg-gray-200 transition">
             FILTER →
           </button>
         </div>
@@ -99,7 +99,7 @@ export default function Services() {
           center={[userLocation.lat, userLocation.lon]}
           zoom={13}
           style={{ width: "75%", height: "50vh" }}
-          className="rounded-lg shadow-md"
+          className="rounded-lg shadow-md mx-auto md:mx-0 max-h-[35vh] mt-10 md:mt-0"
         >
           {/* Tile Layer */}
           <TileLayer
@@ -129,7 +129,7 @@ export default function Services() {
             ))}
         </MapContainer>
 
-        <hr className="w-3/4 border-t-2 border-[#FFFFFF] mb-4" />
+        <hr className="w-3/4 border-t-2 border-[#FFFFFF] mt-6 md:mt-3 mb-4 mx-auto md:mx-0" />
       </div>
       {/* Right Content: Image */}
       <Image

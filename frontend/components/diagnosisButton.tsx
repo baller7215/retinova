@@ -26,8 +26,21 @@ export default function DiagnosisButton() {
     setCameraOpen(true);
   };
 
-  const handlePhotoCapture = (photo: string) => {
-    setPhoto(photo);
+  const handlePhotoCapture = async (photo: string) => {
+    try {
+      const response = await fetch("http://localhost:5000/predict", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ image: photo }),
+      });
+      const result = await response.json();
+      console.log("Prediction Results:", result);
+
+      // Handle results (e.g., display them to the user)
+      alert(`Cataracts: ${result.cataracts}, Uveitis: ${result.uveitis}`);
+    } catch (error) {
+        console.error("Error during prediction:", error);
+    }
   };
 
   return (

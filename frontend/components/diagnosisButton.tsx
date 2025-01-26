@@ -5,9 +5,13 @@ import { Button, Modal, Box, Typography } from "@mui/material";
 import { BsArrowUpRightCircle } from "react-icons/bs";
 import { FaCamera } from "react-icons/fa";
 import { FaRegFileAlt } from "react-icons/fa";
+import CameraModal from "./cameraModal"
 
 export default function DiagnosisButton() {
   const [open, setOpen] = useState(false);
+  const [cameraOpen, setCameraOpen] = useState(false);
+  const [photo, setPhoto] = useState<string | null>(null);
+
   const fileInputRef = React.createRef<HTMLInputElement>();
 
   const handleOpen = () => setOpen(true);
@@ -19,8 +23,11 @@ export default function DiagnosisButton() {
   };
 
   const handleTakePhoto = () => {
-    // Add logic for taking a photo
-    handleClose();
+    setCameraOpen(true);
+  };
+
+  const handlePhotoCapture = (photo: string) => {
+    setPhoto(photo);
   };
 
   return (
@@ -43,8 +50,7 @@ export default function DiagnosisButton() {
       >
         GET DIAGNOSIS
         <BsArrowUpRightCircle
-          className="hover:animate-spin text-[#F9C7FF]"
-          style={{ fontSize: "xs:24px md:26px" }}
+          className="hover:animate-spin text-[#F9C7FF] text-base md:text-2xl"
         />
       </Button>
 
@@ -152,6 +158,13 @@ export default function DiagnosisButton() {
           />
         </Box>
       </Modal>
+
+      {/* Camera Modal */}
+      <CameraModal
+        open={cameraOpen}
+        onClose={() => setCameraOpen(false)}
+        onCapture={handlePhotoCapture}
+      />
     </div>
   );
 }

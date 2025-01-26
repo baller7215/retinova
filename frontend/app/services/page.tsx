@@ -119,9 +119,31 @@ export default function Services() {
             Welcome to RetiNova’s map feature, where we utilize Nominatim with OpenStreetMap, the Overpass API, and Leaflet to connect you with nearby trusted experts.
             </p>
           </div>
-          <button className="hidden md:block mt-4 mb-3 py-2 px-6 w-1/5 bg-white text-black font-medium rounded-full hover:bg-gray-200 transition">
-            FILTER →
-          </button>
+          <div className="flex justify-end">
+          <Button
+            href="https://www.google.com/maps/search/optometry+near+me/"
+            target="_blank"
+            variant="text"
+            sx={{
+              color: "#FFFFFF",
+              display: "flex",
+              gap: "10px",
+              alignItems: "center",
+              fontSize: { xs: "16px", md: "18px" },
+              transition: "transform 0.3s ease",
+              "&:hover": {
+                transform: "scale(1.05)",
+              },
+              borderRadius: "20px",
+              padding: "4px 24px",
+              border: "2px solid",
+              borderColor: "#F9C7FF",
+            }}
+          >
+            MAPS
+            <MdLocationOn className="text-[#F9C7FF]" style={{ fontSize: "24px" }} />
+          </Button>
+          </div>
         </motion.div>
 
         {/* Embedded Map */}

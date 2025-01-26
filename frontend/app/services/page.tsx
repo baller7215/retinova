@@ -10,13 +10,17 @@ export default function Services() {
               {/* Left Section: Description */}
             <div className="flex flex-col gap-5 w-5/6">
             <hr className="w-3/4 border-t-2 border-[#FFFFFF] mb-4" />
-                <div className="flex flex-col mt-2 mb-2 gap-2 w-3/4 text-right">
+                <div className="flex flex-col mt-2 gap-2 w-3/4 text-right">
                     <div className="flex gap-10">
-                        <div className="flex flex-col w-3/5">
+                        <div className="flex flex-col w-4/5">
                             <p className="font-semibold text-2xl text-left">Find Trusted Nearby Optometry Clinics </p>
                         </div>
                         <p className="w-/5 text-left">Welcome to RetiNova’s map feature, where we utilize Google Map API to provide you with nearby trusted experts. It is always recommended to seek out professional advice.</p>
-                    </div>
+                    
+                    </div>    
+                    <button className="mt-4 mb-3 py-2 px-6 w-1/5 bg-white text-black font-medium rounded-full hover:bg-gray-200 transition">
+                        FILTER →
+                    </button>
                 </div>
                 <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d26496.35798577608!2d-118.02439809824002!3d33.6670012746215!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80dd2f3b5556d1ab%3A0x2e67fbd228cc116c!2sIrvine%2C%20CA!5e0!3m2!1sen!2sus!4v1674786470186!5m2!1sen!2sus"

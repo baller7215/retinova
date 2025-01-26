@@ -2,8 +2,11 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 export default function Navbar() {
+  const pathName = usePathname();
+
   return (
     <nav className="block top-20 w-full py-6 md:py-14 px-6 md:px-36">
       <div className="flex items-center justify-between md:mx-auto">
@@ -28,18 +31,24 @@ export default function Navbar() {
         {/* Nav Links */}
         <div className="flex flex-col md:flex-row gap-1 md:gap-10 text-xl md:text-4xl text-[#858585] text-right font-sans font-light">
           <Link
-            href="/diagnosis" 
-            className="hover:underline hover:text-[#FFFFFF]">
-            DIAGNOSIS
+            href="/services" 
+            className={`duration-300 transition ease-in-out ${
+              pathName === "/services" ? "underline text-[#FFFFFF]" : "hover:underline hover:text-[#FFFFFF]"
+            }`}>
+            SERVICES
           </Link>
           <Link
-            href="/services" 
-            className="hover:underline hover:text-[#FFFFFF]">
-            SERVICES
+            href="/diagnosis" 
+            className={`duration-300 transition ease-in-out ${
+              pathName === "/diagnosis" ? "underline text-[#FFFFFF] duration-300" : "hover:underline hover:text-[#FFFFFF]"
+            }`}>
+            DIAGNOSIS
           </Link>
           <Link 
             href="/" 
-            className="hover:underline hover:text-[#FFFFFF]">
+            className={`duration-300 transition ease-in-out ${
+              pathName === "/" ? "underline text-[#FFFFFF] duration-300" : "hover:underline hover:text-[#FFFFFF]"
+            }`}>
             HOME
           </Link>        
         </div>

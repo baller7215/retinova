@@ -1,9 +1,18 @@
+"use client";
+
 import HeroSection from "../components/herosection"
+import Image from "next/image";
+import Navbar from "../components/navbar";
+import DiagnosisModal from "@/components/diagnosisModal";
+import { useState } from "react";
 
 export default function Home() {
+  const [open, setOpen] = useState<boolean>(true);
+
   return (
     <div>
       <HeroSection />
+      <DiagnosisModal isOpen={open} onClose={() => {setOpen(false)}} diagnosis="cataracts" />
     </div>
   );
 }

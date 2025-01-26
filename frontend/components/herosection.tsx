@@ -48,7 +48,7 @@ export default function HeroSection() {
                     }}
                     
                     >
-                    danny gyno
+                    Services
                     </Button>
                     <Button
                         href="/diagnosis"

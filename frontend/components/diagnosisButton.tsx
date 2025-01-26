@@ -21,7 +21,7 @@ export default function DiagnosisButton({ onDiagnose }: { onDiagnose: (diagnosis
   
       try {
         // const response = await fetch("http://localhost:8000/predict", {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/predict`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_MODEL_URL}/predict`, {
           method: "POST",
           body: formData,
         });

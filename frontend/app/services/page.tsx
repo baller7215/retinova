@@ -57,6 +57,7 @@ export default function Services() {
   useEffect(() => {
     async function fetchClinics() {
       try {
+        console.log("Backend URL:", process.env.NEXT_PUBLIC_BACKEND_URL);
         const response = await fetch(
           // `http://localhost:5001/api/nearby-clinics?lat=${userLocation.lat}&lon=${userLocation.lon}`
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/nearby-clinics?lat=${userLocation.lat}&lon=${userLocation.lon}`

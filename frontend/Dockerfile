@@ -7,19 +7,21 @@ WORKDIR /app
 # Copy package files and install dependencies
 COPY package.json package-lock.json ./
 
-# Debug: Print environment variables to confirm they're being passed correctly
-RUN echo "NEXT_PUBLIC_BACKEND_URL=${NEXT_PUBLIC_BACKEND_URL}"
-RUN echo "NEXT_PUBLIC_MODEL_URL=${NEXT_PUBLIC_MODEL_URL}"
-
 # Install dependencies
 RUN npm install --omit=dev=false
 
 # Copy the rest of the application code
 COPY . .
 
-# Debug: Write environment variables into a .env file for the build process
-RUN echo "NEXT_PUBLIC_BACKEND_URL=${NEXT_PUBLIC_BACKEND_URL}" > .env
-RUN echo "NEXT_PUBLIC_MODEL_URL=${NEXT_PUBLIC_MODEL_URL}" >> .env
+# Inject environment variables into the build process
+ARG NEXT_PUBLIC_BACKEND_URL
+ARG NEXT_PUBLIC_MODEL_URL
+ENV NEXT_PUBLIC_BACKEND_URL=$NEXT_PUBLIC_BACKEND_URL
+ENV NEXT_PUBLIC_MODEL_URL=$NEXT_PUBLIC_MODEL_URL
+
+# Debug: Print environment variables to confirm they're passed
+RUN echo "NEXT_PUBLIC_BACKEND_URL=$NEXT_PUBLIC_BACKEND_URL"
+RUN echo "NEXT_PUBLIC_MODEL_URL=$NEXT_PUBLIC_MODEL_URL"
 
 # Build the Next.js app
 RUN npm run build

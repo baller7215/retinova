@@ -14,22 +14,16 @@ export default function HeroSection() {
                     <h1 className="text-3xl md:text-6xl leading-snug font-medium mx-auto md:mx-0">
                         EARLY
                         <br />
-                        DIAGNOSING
+                        DETECTION OF UVEITIS
                         <br />
                         <div className="flex items-center gap-8">
-                            <span>OF EYE CANCER</span>
+                            <span>AND CATARACTS</span>
                             <hr className="hidden md:block w-1/3 border-t-4 border-[#FFFFFF] rounded-full" />
                         </div>
                     </h1>
-                    <hr className="block md:hidden w-11/12 border-t-4 border-[#FFFFFF] rounded-full mx-auto" />
+                    <hr className="block md:hidden w-7/12 border-t-4 border-[#FFFFFF] rounded-full mx-auto" />
                     <p className="text-[#FFFFFF] mt-1 md:mt-6 text-sm md:text-lg leading-relaxed font-light">
-                        Eye cancer is a rare but serious condition that occurs when
-                        malignant cells develop in the tissues of the eye. The most common
-                        type in adults is ocular melanoma, which affects the uvea, while
-                        retinoblastoma is the most prevalent in children, originating in the
-                        retina. Symptoms may include blurry vision, dark spots on the iris,
-                        loss of peripheral vision, or a visible tumor. Early detection is
-                        crucial for improving outcomes and preserving vision.
+                    Our application leverages advanced AI-driven visual computing to aid in the early diagnosis of uveitis and cataracts—two critical eye conditions that can lead to vision loss if untreated. By analyzing patient-provided eye images, the system detects early signs of inflammation or lens clouding, enabling timely intervention. This software is designed to improve diagnostic accuracy, reduce false positives, and provide patients with accessible, quick, and reliable preliminary assessments. Early detection can significantly enhance treatment outcomes and preserve vision.
                     </p>
                     </div>
                 <div className="mt-4 md:mt-8 w-11/12 md:w-2/3 flex justify-between mx-auto md:mx-0">

@@ -57,7 +57,7 @@ export default function Navbar() {
             show: {
               opacity: 1,
               transition: {
-                staggerChildren: 0.2, // Stagger animation by rows
+                // staggerChildren: 0.2, // Stagger animation by rows
                 ease: "easeInOut"
               },
             },
@@ -78,16 +78,16 @@ export default function Navbar() {
             //   hidden: { opacity: 0, y: 30 },
             //   show: { opacity: 1, y: 0 }
             // }}
-            // variants={{
-            //   hidden: { opacity: 0, y: 30 },
-            //   show: {
-            //     opacity: 1,
-            //     y: 0,
-            //     transition: {
-            //       ease: "easeInOut"
-            //     }
-            //   },
-            // }}
+            variants={{
+              hidden: { opacity: 0, y: 30 },
+              show: {
+                opacity: 1,
+                y: 0,
+                transition: {
+                  ease: "easeInOut"
+                }
+              },
+            }}
           >
             <Link
               href="/services" 
@@ -98,16 +98,16 @@ export default function Navbar() {
             </Link>
           </motion.div>
           <motion.div
-            // variants={{
-            //   hidden: { opacity: 0, y: 30 },
-            //   show: {
-            //     opacity: 1,
-            //     y: 0,
-            //     transition: {
-            //       ease: "easeInOut"
-            //     }
-            //   },
-            // }}
+            variants={{
+              hidden: { opacity: 0, y: 30 },
+              show: {
+                opacity: 1,
+                y: 0,
+                transition: {
+                  ease: "easeInOut"
+                }
+              },
+            }}
           >
             <Link
               href="/diagnosis" 
@@ -118,16 +118,16 @@ export default function Navbar() {
             </Link>
           </motion.div>
           <motion.div
-            // variants={{
-            //   hidden: { opacity: 0, y: 30 },
-            //   show: {
-            //     opacity: 1,
-            //     y: 0,
-            //     transition: {
-            //       ease: "easeInOut"
-            //     }
-            //   },
-            // }}
+            variants={{
+              hidden: { opacity: 0, y: 30 },
+              show: {
+                opacity: 1,
+                y: 0,
+                transition: {
+                  ease: "easeInOut"
+                }
+              },
+            }}
           >
             <Link 
               href="/" 

@@ -1,45 +1,125 @@
+"use client";
+
+import dynamic from "next/dynamic";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
-import { Button } from "@mui/material";
-import { BsArrowUpRightCircle } from "react-icons/bs";
-
+// Dynamically import react-leaflet components
+const MapContainer = dynamic(() => import("react-leaflet").then((mod) => mod.MapContainer), {
+  ssr: false,
+});
+const TileLayer = dynamic(() => import("react-leaflet").then((mod) => mod.TileLayer), { ssr: false });
+const Marker = dynamic(() => import("react-leaflet").then((mod) => mod.Marker), { ssr: false });
+const Popup = dynamic(() => import("react-leaflet").then((mod) => mod.Popup), { ssr: false });
 
 export default function Services() {
-    return (
-          <div className="md:flex grid md:flex-cols-2 md:pl-36 py-1 md:py-4 font-sans">
-              {/* Left Section: Description */}
-            <div className="flex flex-col gap-5 w-5/6">
-            <hr className="w-3/4 border-t-2 border-[#FFFFFF] mb-4" />
-                <div className="flex flex-col mt-2 gap-2 w-3/4 text-right">
-                    <div className="flex gap-10">
-                        <div className="flex flex-col w-4/5">
-                            <p className="font-semibold text-2xl text-left">Find Trusted Nearby Optometry Clinics </p>
-                        </div>
-                        <p className="w-/5 text-left">Welcome to RetiNova’s map feature, where we utilize Google Map API to provide you with nearby trusted experts. It is always recommended to seek out professional advice.</p>
-                    
-                    </div>    
-                    <button className="mt-4 mb-3 py-2 px-6 w-1/5 bg-white text-black font-medium rounded-full hover:bg-gray-200 transition">
-                        FILTER →
-                    </button>
-                </div>
-                <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d26496.35798577608!2d-118.02439809824002!3d33.6670012746215!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80dd2f3b5556d1ab%3A0x2e67fbd228cc116c!2sIrvine%2C%20CA!5e0!3m2!1sen!2sus!4v1674786470186!5m2!1sen!2sus"
-                width="70%"
-                height="300"
-                className="border-0"
-                allowFullScreen={true}
-                loading="lazy"
-                ></iframe>
-                <hr className="w-3/4 border-t-2 border-[#FFFFFF] mb-4" />
-            </div>
-            {/* Right Content: Image */}
-            <Image
-                src="/eyenova2.png"
-                alt="Eye Nova Image"
-                width={500} 
-                height={100}
-                className="hidden md:block md:max-h-[60vh]"
-            />
-            </div>         
+  const [clinics, setClinics] = useState([]); // Store clinic data
+  const [userLocation, setUserLocation] = useState({ lat: 33.648821, lon: -117.842844 }); // Default location (Irvine)
+  const [customIcon, setCustomIcon] = useState(null); // State for the Leaflet custom icon
+
+  // Dynamically load Leaflet and create customIcon
+  useEffect(() => {
+    import("leaflet").then((L) => {
+      const icon = new L.Icon({
+        iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+        shadowSize: [41, 41],
+      });
+      setCustomIcon(icon);
+    });
+  }, []);
+
+  // Fetch clinic data from the API
+  useEffect(() => {
+    async function fetchClinics() {
+      try {
+        const response = await fetch(
+          `http://localhost:5001/api/nearby-clinics?lat=${userLocation.lat}&lon=${userLocation.lon}`
+        );
+        const data = await response.json();
+        console.log("Fetched Clinics:", data); // Debugging
+        setClinics(data);
+      } catch (error) {
+        console.error("Error fetching clinics:", error);
+      }
+    }
+
+    fetchClinics();
+  }, [userLocation]);
+
+  // Get user's current location
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setUserLocation({
+          lat: position.coords.latitude,
+          lon: position.coords.longitude,
+        });
+      },
+      (error) => {
+        console.error("Geolocation error:", error);
+      }
     );
-  }
+  }, []);
+
+  return (
+    <div className="md:flex grid md:flex-cols-2 md:pl-36 py-1 md:py-4 font-sans">
+      {/* Left Section: Description */}
+      <div className="flex flex-col gap-5 w-5/6">
+        <hr className="w-3/4 border-t-2 border-[#FFFFFF] mb-4" />
+        <div className="flex flex-col mt-2 gap-2 w-3/4 text-right">
+          <div className="flex gap-10">
+            <div className="flex flex-col w-4/5">
+              <p className="font-semibold text-2xl text-left">Find Trusted Nearby Optometry Clinics</p>
+            </div>
+            <p className="w-/5 text-left">
+              Welcome to RetiNova’s map feature, where we utilize OpenStreetMap to provide you with
+              nearby trusted experts. It is always recommended to seek out professional advice.
+            </p>
+          </div>
+          <button className="mt-4 mb-3 py-2 px-6 w-1/5 bg-white text-black font-medium rounded-full hover:bg-gray-200 transition">
+            FILTER →
+          </button>
+        </div>
+
+        {/* Embedded Map */}
+        <MapContainer
+          center={[userLocation.lat, userLocation.lon]}
+          zoom={13}
+          style={{ width: "70%", height: "300px" }}
+          className="rounded-lg shadow-md"
+        >
+          {/* Tile Layer */}
+          <TileLayer
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          />
+
+          {/* Markers for Clinics */}
+          {customIcon &&
+            clinics.map((clinic, index) => (
+              <Marker key={index} position={[clinic.lat, clinic.lon]} icon={customIcon}>
+                <Popup>
+                  <strong>{clinic.name}</strong>
+                  <br />
+                  {clinic.address}
+                </Popup>
+              </Marker>
+            ))}
+        </MapContainer>
+
+        <hr className="w-3/4 border-t-2 border-[#FFFFFF] mb-4" />
+      </div>
+      {/* Right Content: Image */}
+      <Image
+        src="/eyenova2.png"
+        alt="Eye Nova Image"
+        width={500}
+        height={100}
+        className="hidden md:block md:max-h-[60vh]"
+      />
+    </div>
+  );
+}

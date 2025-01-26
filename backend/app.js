@@ -1,6 +1,14 @@
 const axios = require("axios");
 const express = require("express");
+const cors = require("cors");
+
+const rateLimit = require("express-rate-limit");
+
 const app = express();
+
+const addressCache = new Map();
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+app.use(cors());
 
 /**
  * nominatim search function
@@ -66,104 +74,64 @@ const searchPlacesOverpass = async (lat, lon, radius = 25000) => {
     }
 };
 
-/**
- * reverse geocode function
- *
- * @param lat latitude
- * @param lon longitude
- * @returns uses nominatim reverse search to refetch the address given a lat and lon
- */
 const reverseGeocode = async (lat, lon) => {
+    const cacheKey = `${lat},${lon}`;
+    if (addressCache.has(cacheKey)) return addressCache.get(cacheKey);
+
+    await delay(1000); // Add a 1-second delay
     try {
         const response = await axios.get("https://nominatim.openstreetmap.org/reverse", {
-            params: {
-                format: "json",
-                lat,
-                lon,
-                addressdetails: 1,
-            },
+            params: { format: "json", lat, lon, addressdetails: 1 },
         });
         const address = response.data.address || {};
-        return `${address.road || ""}, ${address.city || address.town || address.village || ""}, ${
-            address.state || ""
-            }, ${address.country || ""}`.replace(/(^[,\s]+|[,\s]+$)/g, ""); // clean up commas
+        const formattedAddress = `${address.road || ""}, ${
+            address.city || address.town || address.village || ""
+        }, ${address.state || ""}, ${address.country || ""}`.replace(/(^[,\s]+|[,\s]+$)/g, "");
+        addressCache.set(cacheKey, formattedAddress); // Cache the result
+        return formattedAddress;
     } catch (error) {
         console.error(`Reverse geocoding failed for (${lat}, ${lon}):`, error.message);
         return "No address available";
     }
 };
 
-// Combined Search with Reverse Geocoding
-/**
- * combines search with reverse geocoding
- *
- * @param street
- * @param city
- * @param county
- * @param state
- * @param country
- * @param postalcode
- * @param lat
- * @param lon
- * @returns combination of results from nominate and overpass
- */
 const searchCombined = async ({ street, city, county, state, country, postalcode, lat, lon }) => {
-    // build the address string for Nominatim
     const addressParts = [street, city, county, state, country, postalcode].filter(Boolean).join(", ");
-
-    // define keywords
-    /** @todo add more keywords for bigger search */
     const keywords = ["optometrist", "eye care", "ophthalmologist"];
 
-    // perform searches
     const nominatimResults = await searchPlacesNominatim(addressParts, keywords);
     const overpassResults = await searchPlacesOverpass(lat, lon);
 
-    // combine results
     const allResults = [...nominatimResults, ...overpassResults];
+    const resultsWithAddresses = [];
+    for (const result of allResults) {
+        if (result.address === "No address available") {
+            result.address = await reverseGeocode(result.lat, result.lon);
+        }
+        resultsWithAddresses.push(result);
+    }
 
-    // reverse geocode missing addresses
-    const resultsWithAddresses = await Promise.all(
-        allResults.map(async (result) => {
-            if (result.address === "No address available") {
-                result.address = await reverseGeocode(result.lat, result.lon);
-            }
-            return result;
-        })
-    );
-
-    // remove duplicates based on lat/lon
-    const uniqueResults = Array.from(
+    return Array.from(
         new Map(resultsWithAddresses.map((item) => [`${item.lat},${item.lon}`, item])).values()
     );
-
-    return uniqueResults;
 };
 
+const limiter = rateLimit({
+    windowMs: 60 * 1000, // 1 minute
+    max: 60, // Limit each IP to 60 requests per minute
+});
 
-/**
- * api endpoint that calls helper functions
- */
+app.use(limiter);
+
 app.get("/api/nearby-clinics", async (req, res) => {
     try {
         const { lat, lon } = req.query;
+        if (!lat || !lon) return res.status(400).json({ error: "Latitude and longitude are required" });
 
-        if (!lat || !lon) {
-            return res.status(400).json({ error: "Latitude and longitude are required" });
-        }
-
-        const address = await axios
-            .get("https://nominatim.openstreetmap.org/reverse", {
-                params: {
-                format: "json",
-                lat,
-                lon,
-                addressdetails: 1,
-                },
-            })
-            .then((response) => response.data.address);
-
-        // Extract address components
+        const addressResponse = await axios.get("https://nominatim.openstreetmap.org/reverse", {
+            params: { format: "json", lat, lon, addressdetails: 1 },
+        });
+        const address = addressResponse.data.address || {};
         const street = `${address.house_number || ""} ${address.road || ""}`.trim();
         const city = address.city || address.town || address.village || address.suburb || "";
         const county = address.county || "";
@@ -171,9 +139,7 @@ app.get("/api/nearby-clinics", async (req, res) => {
         const country = address.country || "";
         const postalcode = address.postcode || "";
 
-        // Perform the combined search
         const clinics = await searchCombined({ street, city, county, state, country, postalcode, lat, lon });
-
         res.json(clinics);
     } catch (error) {
         console.error("Error fetching clinics:", error.message);

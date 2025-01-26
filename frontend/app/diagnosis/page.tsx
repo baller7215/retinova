@@ -6,7 +6,7 @@ import React from "react";
 import { BiAperture } from "react-icons/bi";
 import { useState } from "react";
 import DiagnosisButton from "../../components/diagnosisButton"
-import DiagnosisModal from "@/components/diagnosisModal";
+import DiagnosisModal from "../../components/diagnosisModal";
 import { motion } from "motion/react";
 
 

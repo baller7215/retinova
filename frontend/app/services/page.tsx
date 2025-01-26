@@ -3,7 +3,7 @@
 import { motion } from "motion/react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
-import { Button } from "@mui/material";
+import { Button, Skeleton, Box } from "@mui/material";
 import { useEffect, useState } from "react";
 import { MdLocationOn } from "react-icons/md";
 
@@ -20,6 +20,7 @@ export default function Services() {
   const [userLocation, setUserLocation] = useState({ lat: 33.648821, lon: -117.842844 }); // Default location (Irvine)
   const [customIcon, setCustomIcon] = useState(null); // State for the Leaflet custom icon
   const [userIcon, setUserIcon] = useState(null); // State for the user's custom icon
+  const [loading, setLoading] = useState(true); // State for if map is loading
 
   // Dynamically load Leaflet and create customIcon
   useEffect(() => {
@@ -56,6 +57,8 @@ export default function Services() {
         setClinics(data);
       } catch (error) {
         console.error("Error fetching clinics:", error);
+      } finally {
+        setLoading(false)
       }
     }
 
@@ -160,6 +163,25 @@ export default function Services() {
             },
           }}
         >
+          {loading ? (
+            <Box
+              sx={{
+                width: "75%",
+                height: "50vh",
+                borderRadius: "8px",
+                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.2)",
+                overflow: "hidden",
+              }}
+            >
+              <Skeleton
+                variant="rectangular"
+                animation="wave"
+                width="100%"
+                height="100%"
+                sx={{ borderRadius: "8px" }}
+              />
+            </Box>
+          ) : (
           <MapContainer
             center={[userLocation.lat, userLocation.lon]}
             zoom={13}
@@ -193,6 +215,7 @@ export default function Services() {
                 </Marker>
               ))}
           </MapContainer>
+          )}
         </motion.div>
 
         <hr className="w-3/4 border-t-2 border-[#FFFFFF] mt-6 md:mt-3 mb-4 mx-auto md:mx-0" />

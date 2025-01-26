@@ -78,7 +78,7 @@ export default function CameraModal({ open, onClose, onCapture }: CameraModalPro
         }}
       >
         <button
-            onClick={onClose}
+            onClick={() => {onClose(); stopCamera();} }
             style={{
               position: "absolute",
               top: "16px",

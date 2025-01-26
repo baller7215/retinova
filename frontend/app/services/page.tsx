@@ -113,7 +113,7 @@ export default function Services() {
             <div className="flex flex-col w-full md:w-4/5">
               <p className="font-semibold text-2xl text-center md:text-left mx-auto md:mx-0 px-6 md:px-0">Find Trusted Nearby Optometry Clinics</p>
             </div>
-            <p className="hidden display:block w-/5 text-left">
+            <p className="hidden md:block w-/5 text-left">
               Welcome to RetiNova’s map feature, where we utilize OpenStreetMap to provide you with
               nearby trusted experts. It is always recommended to seek out professional advice.
             </p>

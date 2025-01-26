@@ -3,11 +3,11 @@ services:
     build: ./frontend
     ports:
       - "3000:3000"
-    environment:
-      - NEXT_PUBLIC_FIREBASE_CONFIG=<your-firebase-config>
     volumes:
       - ./frontend:/app
     command: npm run dev
+    depends_on:
+      - backend
 
   backend:
     build: ./backend
@@ -16,8 +16,15 @@ services:
     volumes:
       - ./backend:/app
     command: npm run dev
+    depends_on:
+      - ml-model
 
-  # ml-model:
-  #   build: ./ml-model
-  #   ports:
-  #     - "5001:5001"
+  ml-model:
+    build: ./ml-model
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./ml-model:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: ["uvicorn", "ml_app:app", "--host", "0.0.0.0", "--port", "8000"]

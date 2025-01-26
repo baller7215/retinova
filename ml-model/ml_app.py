@@ -3,8 +3,18 @@ from PIL import Image
 import torch
 import numpy as np
 from torchvision import transforms
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], 
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 class SimpleCNN(torch.nn.Module):
     def __init__(self, num_classes):
@@ -91,4 +101,11 @@ async def predict(file: UploadFile = File(...)):
 
 
 # test
+# cataracts
 # curl -X POST -F "file=@/Users/leonardosiu/projects/irvinehacks2025/retinova/frontend/public/cataracts.jpeg" http://localhost:8000/predict
+
+# uveitis
+# curl -X POST -F "file=@/Users/leonardosiu/projects/irvinehacks2025/retinova/frontend/public/uveitis.jpeg" http://localhost:8000/predict
+
+# normal
+# curl -X POST -F "file=@/Users/leonardosiu/projects/irvinehacks2025/retinova/frontend/public/healthy-eye.jpeg" http://localhost:8000/predict

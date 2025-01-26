@@ -6,7 +6,7 @@ import { BsArrowUpRightCircle } from "react-icons/bs";
 import { FaCamera } from "react-icons/fa";
 import { FaRegFileAlt } from "react-icons/fa";
 
-export default function UploadButton() {
+export default function DiagnosisButton() {
   const [open, setOpen] = useState(false);
   const fileInputRef = React.createRef<HTMLInputElement>();
 
@@ -35,14 +35,13 @@ export default function UploadButton() {
           alignItems: "center",
           fontSize: { xs: "14px", md: "18px" },
           transition: "transform 0.3s ease",
-          fontWeight: "light",
           "&:hover": {
             transform: "scale(1.05)",
           },
         }}
         onClick={handleOpen}
       >
-        UPLOAD FILE
+        GET DIAGNOSIS
         <BsArrowUpRightCircle
           className="hover:animate-spin text-[#F9C7FF]"
           style={{ fontSize: "xs:24px md:26px" }}
@@ -111,12 +110,12 @@ export default function UploadButton() {
                 color: "#FFFFFF",
                 fontWeight: "bold",
                 transition: "transform 0.3s ease",
-                padding: "16px",
+                padding: {xs:"5px", md:"16px"},
                 "&:hover": { transform: "scale(1.05)" },
                 }}
             >
                 <div className="flex flex-col gap-3">
-                    <FaCamera className="text-6xl mx-auto"/>
+                    <FaCamera className="text-4xl md:text-6xl mx-auto"/>
                     Take Photo
                 </div>
             </Button>
@@ -136,7 +135,7 @@ export default function UploadButton() {
                 }}
             >
                 <div className="flex flex-col gap-3">
-                    <FaRegFileAlt className="text-6xl mx-auto"/>
+                    <FaRegFileAlt className="text-4xl md:text-6xl mx-auto"/>
                     Upload File
                 </div>
             </Button>

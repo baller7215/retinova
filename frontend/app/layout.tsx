@@ -13,6 +13,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={inter.className}>
+      <head>
+        <link rel="icon" href="/logo.png" />
+        <title>Retinova</title>
+      </head>
       <body className="min-w-screen min-h-screen h-auto">
         <Navbar />
         {children}

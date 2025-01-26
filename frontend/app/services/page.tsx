@@ -58,7 +58,8 @@ export default function Services() {
     async function fetchClinics() {
       try {
         const response = await fetch(
-          `http://localhost:5001/api/nearby-clinics?lat=${userLocation.lat}&lon=${userLocation.lon}`
+          // `http://localhost:5001/api/nearby-clinics?lat=${userLocation.lat}&lon=${userLocation.lon}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/nearby-clinics?lat=${userLocation.lat}&lon=${userLocation.lon}`
         );
         const data = await response.json();
         console.log("Fetched Clinics:", data); // Debugging

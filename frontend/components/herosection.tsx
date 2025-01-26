@@ -40,18 +40,18 @@ export default function HeroSection() {
                     }}
                     className="flex flex-col w-11/12 md:w-2/3 text-center md:text-left text-balance gap-6 mx-auto md:mx-0"
                 >
-                    <h1 className="text-3xl md:text-6xl leading-snug font-medium mx-auto md:mx-0">
+                    <h1 className="text-2xl md:text-6xl leading-snug font-medium mx-auto md:mx-0">
                         EARLY
                         <br />
                         DETECTION OF UVEITIS
                         <br />
                         <div className="flex items-center gap-8">
-                            <span>AND CATARACTS</span>
+                            <span className="mx-auto md:mx-0">AND CATARACTS</span>
                             <hr className="hidden md:block w-1/3 border-t-4 border-[#FFFFFF] rounded-full" />
                         </div>
                     </h1>
                     <hr className="block md:hidden w-7/12 border-t-4 border-[#FFFFFF] rounded-full mx-auto" />
-                    <p className="text-[#FFFFFF] mt-1 md:mt-6 text-sm md:text-lg leading-relaxed font-light">
+                    <p className="text-[#FFFFFF] mt-0 md:mt-6 text-xs md:text-lg leading-relaxed font-light">
                     Our application leverages advanced AI-driven visual computing to aid in the early diagnosis of uveitis and cataracts—two critical eye conditions that can lead to vision loss if untreated. By analyzing patient-provided eye images, the system detects early signs of inflammation or lens clouding, enabling timely intervention. This software is designed to improve diagnostic accuracy, reduce false positives, and provide patients with accessible, quick, and reliable preliminary assessments. Early detection can significantly enhance treatment outcomes and preserve vision.
                     </p>
                 </motion.div>

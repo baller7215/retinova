@@ -1,4 +1,1 @@
-### RetiNova
-<hr>
-<br>
-Application (mobile responsive?) that uses visual computing to analyze and diagnose patients for eye health.
+![RetiNova Cover](frontend/public/cover.png)

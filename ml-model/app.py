@@ -40,7 +40,7 @@ train_dataset = datasets.ImageFolder(root=f"{data_path}/Train", transform=transf
 test_dataset = datasets.ImageFolder(root=f"{data_path}/Test", transform=transform)
 
 # Split datasets into loaders
-batch_size = 16
+batch_size = 32
 train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
 test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
@@ -107,7 +107,7 @@ model = SimpleCNN(num_classes)
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
-def train_model(model, loader, num_epochs=20):
+def train_model(model, loader, num_epochs=10):
     for epoch in range(num_epochs):
         model.train()
         running_loss = 0.0
@@ -131,14 +131,14 @@ def train_model(model, loader, num_epochs=20):
         print(f"Epoch {epoch + 1}/{num_epochs}, Loss: {running_loss / len(loader)}, Accuracy: {100 * correct / total:.2f}%")
 
 # Train the model using cataracts_normal_loader
-train_model(model, cataracts_normal_loader, num_epochs=20)
+train_model(model, cataracts_normal_loader, num_epochs=10)
 
 num_classes = 2  # 'normal' and 'uveitis'
 normal_uveitis_model = SimpleCNN(num_classes)
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(normal_uveitis_model.parameters(), lr=0.001)
 
-def train_model_for_uveitis(model, loader, num_epochs=20):
+def train_model_for_uveitis(model, loader, num_epochs=10):
     for epoch in range(num_epochs):
         model.train()
         running_loss = 0.0
@@ -160,4 +160,36 @@ def train_model_for_uveitis(model, loader, num_epochs=20):
 
         print(f"Epoch {epoch + 1}/{num_epochs}, Loss: {running_loss / len(loader)}, Accuracy: {100 * correct / total:.2f}%")
 
-train_model_for_uveitis(normal_uveitis_model, normal_uveitis_loader, num_epochs=20)
+train_model_for_uveitis(normal_uveitis_model, normal_uveitis_loader, num_epochs=15)
+
+#test models
+def test_model(model, loader, valid_labels):
+    model.eval()  # Set the model to evaluation mode
+    correct = 0
+    total = 0
+    with torch.no_grad():  # Disable gradient computation for testing
+        for inputs, labels in loader:
+            # Convert labels to binary values (0 and 1)
+            labels = torch.tensor([0 if l.item() == valid_labels[0] else 1 for l in labels])
+
+            outputs = model(inputs)  # Forward pass
+            _, predicted = torch.max(outputs, 1)  # Get predicted labels
+            total += labels.size(0)  # Total number of samples
+            correct += (predicted == labels).sum().item()  # Count correct predictions
+
+    accuracy = 100 * correct / total
+    print(f"Test Accuracy: {accuracy:.2f}%"
+)
+    print("Test Cataracts")
+valid_labels_cataracts = [train_dataset.class_to_idx['cataracts'], train_dataset.class_to_idx['normal']]
+cataracts_normal_test_loader = filter_loader_by_labels(test_loader, valid_labels_cataracts)
+
+test_model(model, cataracts_normal_test_loader, valid_labels_cataracts)
+
+valid_labels_uveitis = [train_dataset.class_to_idx['uveitis'], train_dataset.class_to_idx['normal']]
+normal_uveitis_test_loader = filter_loader_by_labels(test_loader, valid_labels_uveitis)
+
+test_model(normal_uveitis_model, normal_uveitis_test_loader, valid_labels_uveitis)
+
+torch.save(model.state_dict(), "cataracts_model.pth")
+torch.save(normal_uveitis_model.state_dict(), "uveitis_model.pth")

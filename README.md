@@ -14,7 +14,7 @@ RetiNova is an AI-driven application designed to provide users with a fast and e
 - Displays confidence percentages for diagnosis accuracy
 
 ## 🛠️ Tech Stack
-<img src="frontend/public/techstack.png" alt="Tech Stack" style="width: 100%; height: auto;" />
+<img src="https://i.imgur.com/kjKQ84w.png" alt="Tech Stack"/>
 
 ## 🖥️ How to Use
 ### Prerequisites

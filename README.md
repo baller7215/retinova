@@ -36,7 +36,7 @@ RetiNova is an AI-driven application designed to provide users with a fast and e
 ```
 ### 3. Run the AI Model
 ```bash
-  flask run
+  fastapi run
 ```
 ### 4. Run the Backend
 ```bash
